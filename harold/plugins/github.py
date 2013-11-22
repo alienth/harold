@@ -179,7 +179,7 @@ class SalonDatabase(object):
         returnValue(bool(rows[0][0]))
 
     @inlineCallbacks
-    def process_pullrequest(self, pull_request, repository=None):
+    def process_pullrequest(self, pull_request, repository):
         repo = repository or pull_request["repository"]["full_name"]
         id = int(pull_request["number"])
 
@@ -268,7 +268,8 @@ class Salon(object):
 
     @inlineCallbacks
     def dispatch_pullrequest(self, parsed):
-        yield self.database.process_pullrequest(parsed)
+        yield self.database.process_pullrequest(parsed["pull_request"],
+                                        parsed["repository"]["full_name"])
 
         if parsed["action"] != "opened":
             return
